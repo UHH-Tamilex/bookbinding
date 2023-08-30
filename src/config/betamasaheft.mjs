@@ -1,6 +1,6 @@
 const betamasaheft = {
     name: 'Beta maṣāḥǝft',
-    url: '/betamasaheft.db',
+    url: 'https://uhh-tamilex.github.io/bookbinding/betamasaheft.db',
     table: 'mss',
     columns: {
         id: 'id',

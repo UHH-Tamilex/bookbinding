@@ -1,7 +1,7 @@
 const coptic = {
     name: 'Coptic bookbinding',
     //url: 'https://staging.fdr.uni-hamburg.de/record/2368/files/coptic.db?download=1',
-    url: '/coptic.db',
+    url: 'https://uhh-tamilex.github.io/bookbinding/coptic.db',
     table: 'mss',
     columns: {
         id: 'id',
