@@ -127,25 +127,6 @@ header {
     width: 100%;
 }
 
-#splash {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-start;
-    background: url('/Indien_0052-cover.png');
-    background-size: auto 100%;
-    background-repeat: no-repeat;
-    padding: 65px 0 55px 75px;
-    color: white;
-    text-shadow: 4px 4px 7px black;
-}
-@supports (background-image: url('/Indien_0052-cover.webp')) {
-    #splash { background-image: url('/Indien_0052-cover.webp'); }
-}
-#splash div {
-    font-size: 3rem;
-}
-
 #spinner {
     display: flex;
     /*position: absolute;
