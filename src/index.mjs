@@ -20,7 +20,7 @@ const getData = async (config) => {
     const worker = await createSqlWorker(config.url);
 
     const conditions = config.conditions ? ` WHERE ${config.conditions.join(' AND ')}` : '';
-    const columnstr = [...allColumns.keys()].map(str => `${config.columns[str]} as ${str}`).join(', ');
+    const columnstr = [...allColumns.keys()].map(str => `${config.columns[str]} AS ${str}`).join(', ');
     const result = await worker.db.query(`SELECT ${columnstr} FROM ${config.table}${conditions}`);
     for(const row of result) {
         row.database = config.name;
