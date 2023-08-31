@@ -659,6 +659,18 @@ fieldset div {
     margin-left: 5px;
 }
 
+#gptin {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+#gptin input {
+    width: 80%;
+    height: 3rem;
+    font-size: 1.5rem;
+    padding: 0.5rem;
+}
+
 @media (max-width: 1080px) {
     article > footer img {
         height: 2rem;

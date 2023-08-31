@@ -7,6 +7,9 @@ import tst from './config/tst.mjs';
 import coptic from './config/coptic.mjs';
 import betamasaheft from './config/betamasaheft.mjs';
 
+const _state = {
+    dt: null,
+};
 
 const allColumns = new Map([
     ['id', {data: 'id', title: 'ID', name: 'id'}],
@@ -16,12 +19,16 @@ const allColumns = new Map([
     ['link',{data: 'link',title: 'source',name: 'link'}]
     ]);
 
-const getData = async (config) => {
+const getData = async (config, newconditions) => {
     const worker = await createSqlWorker(config.url);
 
-    const conditions = config.conditions ? ` WHERE ${config.conditions.join(' AND ')}` : '';
+    const conditions = newconditions ||
+        (config.conditions ? 
+            `FROM ${config.table} WHERE ${config.conditions.join(' AND ')}` : 
+            `FROM ${config.table}`);
     const columnstr = [...allColumns.keys()].map(str => `${config.columns[str]} AS ${str}`).join(', ');
-    const result = await worker.db.query(`SELECT ${columnstr} FROM ${config.table}${conditions}`);
+    console.log(conditions);
+    const result = await worker.db.query(`SELECT ${columnstr} ${conditions}`);
     for(const row of result) {
         row.database = config.name;
         if(config.postprocess) {
@@ -70,6 +77,7 @@ const makeTable = (data,table) => {
           //fixedHeader: true
 
   });
+    /*
   const filterrow = document.createElement('tr');
   filterrow.id = 'filter_inputs';
   for(const column of columns) {
@@ -87,6 +95,7 @@ const makeTable = (data,table) => {
   filterrow.addEventListener('keyup', filterColumn.bind(null,dataTable));
   filterrow.addEventListener('change', filterColumn.bind(null,dataTable));
   filterrow.addEventListener('clear', filterColumn.bind(null,dataTable));
+  */
    /* 
   const filterbutton = document.createElement('button');
   filterbutton.id = 'filter_button';
@@ -151,9 +160,39 @@ const makeTable = (data,table) => {
   });
 
   //table.dataset.files = data.files;
-
+  
   return dataTable;
 };
+
+const gptSend = (e) => {
+    if(e.key === 'Enter') {
+        e.preventDefault();
+        document.getElementById('spinner').style.display = 'flex';
+        document.getElementById('index_wrapper').style.visibility = 'hidden';
+        document.getElementById('index').style.visibility = 'hidden';
+        const ws = new WebSocket('ws://localhost:5353');
+        ws.onmessage = gptReceive;
+        ws.onopen = () => ws.send(e.target.value);
+    }
+};
+
+const gptReceive = async (e) => {
+    const conditions = JSON.parse(e.data);
+    const results = [
+        ...await getData(tst,conditions.tst), 
+        ...await getData(coptic,conditions.coptic), 
+        ...await getData(betamasaheft,conditions.betamasaheft)
+    ];
+    
+    document.getElementById('spinner').style.display = 'none';
+    document.getElementById('index_wrapper').style.visibility = 'visible';
+    document.getElementById('index').style.visibility = 'visible';
+
+    _state.dt.clear();
+    _state.dt.rows.add(results);
+    _state.dt.draw();
+};
+
 window.addEventListener('load', async () => {
     const results = [
         ...await getData(tst), 
@@ -161,6 +200,9 @@ window.addEventListener('load', async () => {
         ...await getData(betamasaheft)
     ];
     
-    const dt = makeTable(results,document.querySelector('table'));
-    StatsListen(dt);
+    _state.dt = makeTable(results,document.querySelector('table'));
+  
+    StatsListen(_state.dt);
+
+    document.getElementById('gptin').addEventListener('keypress',gptSend);
 });
