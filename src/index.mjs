@@ -172,7 +172,10 @@ const gptSend = (e) => {
         document.getElementById('index').style.visibility = 'hidden';
         const ws = new WebSocket('ws://localhost:5353');
         ws.onmessage = gptReceive;
-        ws.onopen = () => ws.send(e.target.value);
+        ws.onopen = () => {
+            ws.send(e.target.value);
+            ws.close();
+        };
     }
 };
 
