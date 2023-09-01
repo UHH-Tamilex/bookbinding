@@ -143,10 +143,10 @@ const StatsListen = (dt) => {
             statsbox.style.display = 'block';
             const searchparams = [dt.search(),...dt.columns().search().toArray()];
             const stringy = JSON.stringify(searchparams);
-            if(!statsbox.querySelector('canvas') || statsbox.dataset.search !== stringy) {
+            //if(!statsbox.querySelector('canvas') || statsbox.dataset.search !== stringy) {
                 drawStats(dt,searchparams);
                 statsbox.dataset.search = stringy;
-            }
+            //}
         }
 });
 };

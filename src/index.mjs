@@ -167,6 +167,7 @@ const makeTable = (data,table) => {
 const gptSend = (e) => {
     if(e.key === 'Enter') {
         e.preventDefault();
+        document.getElementById('listview').click();
         document.getElementById('spinner').style.display = 'flex';
         document.getElementById('index_wrapper').style.visibility = 'hidden';
         document.getElementById('index').style.visibility = 'hidden';
