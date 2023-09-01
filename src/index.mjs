@@ -27,7 +27,6 @@ const getData = async (config, newconditions) => {
             `FROM ${config.table} WHERE ${config.conditions.join(' AND ')}` : 
             `FROM ${config.table}`);
     const columnstr = [...allColumns.keys()].map(str => `${config.columns[str]} AS ${str}`).join(', ');
-    console.log(conditions);
     const result = await worker.db.query(`SELECT ${columnstr} ${conditions}`);
     for(const row of result) {
         row.database = config.name;
@@ -185,7 +184,6 @@ const gptReceive = async (e) => {
         ...await getData(betamasaheft,conditions.betamasaheft)
     ].filter(r => r.height && r.width);
    
-    console.log(results[0]);
     document.getElementById('spinner').style.display = 'none';
     document.getElementById('index_wrapper').style.visibility = 'visible';
     document.getElementById('index').style.visibility = 'visible';
