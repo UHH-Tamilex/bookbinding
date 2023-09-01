@@ -183,8 +183,9 @@ const gptReceive = async (e) => {
         ...await getData(tst,conditions.tst), 
         ...await getData(coptic,conditions.coptic), 
         ...await getData(betamasaheft,conditions.betamasaheft)
-    ];
-    
+    ].filter(r => r.height && r.width);
+   
+    console.log(results[0]);
     document.getElementById('spinner').style.display = 'none';
     document.getElementById('index_wrapper').style.visibility = 'visible';
     document.getElementById('index').style.visibility = 'visible';
