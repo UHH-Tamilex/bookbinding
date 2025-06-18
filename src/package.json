@@ -17,6 +17,6 @@
     "chart.js": "^4.4.0",
     "datatables.net-dt": "^1.13.6",
     "datatables.net-responsive-dt": "^2.5.0",
-    "sql.js-httpvfs": "^0.8.12"
-  }
+    "sql.js": "^1.13.0"
+    }
 }

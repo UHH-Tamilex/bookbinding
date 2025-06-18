@@ -1,9 +1,8 @@
-import {resolve} from 'path';
-import {defineConfig} from 'vite';
+import { defineConfig } from 'vite';
 
 export default defineConfig({
-    build: {
-        outDir: './dist/',
-    },
-    base: './',
+  base: '/bookbinding/',
+  build: {
+    outDir: 'dist',
+  },
 });

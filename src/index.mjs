@@ -1,4 +1,5 @@
-import createSqlWorker from './sqlWorker.mjs';
+//import createSqlWorker from './sqlWorker.mjs';
+import loadDatabase from './loadDatabase.mjs';
 import { StatsListen} from './stats.mjs';
 import DataTable from 'datatables.net-dt';
 import 'datatables.net-responsive-dt';
@@ -17,22 +18,36 @@ const allColumns = new Map([
     ]);
 
 const getData = async (config) => {
-    const worker = await createSqlWorker(config.url);
+  const db = await loadDatabase(config.url);  // nicht `worker.db`
+  
+  const conditions = config.conditions ? ` WHERE ${config.conditions.join(' AND ')}` : '';
+  const columnstr = [...allColumns.keys()]
+    .map(str => `${config.columns[str]} AS ${str}`).join(', ');
+  
+  const sql = `SELECT ${columnstr} FROM ${config.table}${conditions}`;
+  const result = db.exec(sql);  // `exec` liefert [{columns: [...], values: [...]}]
 
-    const conditions = config.conditions ? ` WHERE ${config.conditions.join(' AND ')}` : '';
-    const columnstr = [...allColumns.keys()].map(str => `${config.columns[str]} AS ${str}`).join(', ');
-    const result = await worker.db.query(`SELECT ${columnstr} FROM ${config.table}${conditions}`);
-    for(const row of result) {
-        row.database = config.name;
-        if(config.postprocess) {
-            for(const column of [...allColumns.keys()]) {
-                if(config.postprocess[column])
-                    row[column] = config.postprocess[column](row[column]);
-            }
+  const rows = [];
+  for (const { columns, values } of result) {
+    for (const row of values) {
+      const obj = Object.fromEntries(columns.map((key, i) => [key, row[i]]));
+      obj.database = config.name;
+
+      if (config.postprocess) {
+        for (const column of [...allColumns.keys()]) {
+          if (config.postprocess[column]) {
+            obj[column] = config.postprocess[column](obj[column]);
+          }
         }
+      }
+
+      rows.push(obj);
     }
-    return result;
+  }
+
+  return rows;
 };
+
 
 const filterColumn = (dt,e) => {
     const colname = e.target.dataset.name;
